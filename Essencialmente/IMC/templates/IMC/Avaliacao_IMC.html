@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação IMC</title>
+    <!-- Carrega Tailwind CSS para estilização (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: 'Josefin Sans', 'Quicksand', sans-serif;
+            background-color: #f8fafc; /* cor de fundo cinza claro */
+        }
+        .container {
+            max-width: 800px;
+        }
+        /* Estilo para campos do formulário (aplicado via forms.py) */
+        .form-field {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db; /* border-gray-300 */
+            border-radius: 0.5rem;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #ffffff;
+        }
+        /* Estilo específico para o campo de foto, pois ele é um FileInput */
+        input[type="file"] {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 0.375rem;
+            width: 100%;
+            background-color: #ffffff;
+        }
+        /* Estilo para links de navegação */
+        .nav-btn {
+            background-color: #3b82f6; 
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition-duration: 300ms;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .nav-btn:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-12">
+
+    <!-- Navbar de Navegação Rápida -->
+    <nav class="w-full max-w-4xl flex justify-between px-6 mb-8">
+        <a href="{% url 'home' %}" class="nav-btn">← Voltar para Home</a>
+        <a href="{% url 'IMC:listar_cadastrados_imc' %}" class="nav-btn">Ver Cadastros</a>
+    </nav>
+
+    <div class="container bg-white p-8 rounded-xl shadow-2xl border border-gray-100">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
+            Avaliação e Cálculo de IMC
+        </h1>
+
+        <!-- --------------------------------- -->
+        <!-- 1. EXIBIÇÃO DE MENSAGENS/RESULTADOS -->
+        <!-- --------------------------------- -->
+        {% if success_message %}
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded-lg" role="alert">
+                <p class="font-bold">Sucesso!</p>
+                <p>{{ success_message }}</p>
+            </div>
+        {% endif %}
+        
+        <!-- Exibe o resultado do cálculo se ele foi realizado -->
+        {% if valor_imc %}
+            <div class="p-6 mb-6 rounded-xl border-2 border-gray-200 bg-blue-50">
+                <h2 class="text-xl font-semibold text-gray-700 mb-3">Resultado da Avaliação</h2>
+                <p class="text-lg">IMC Calculado: 
+                    <span class="font-extrabold text-blue-800 text-2xl">{{ valor_imc|floatformat:2 }}</span>
+                </p>
+                <p class="text-lg mt-1">Classificação: 
+                    <!-- A cor da classificação (cor_classificacao) é injetada pela view, ex: 'text-red-600 font-bold' -->
+                    <span class="{{ cor_classificacao }} text-2xl">{{ classificacao }}</span>
+                </p>
+            </div>
+        {% endif %}
+
+        <!-- --------------------------------- -->
+        <!-- 2. FORMULÁRIO DE CADASTRO E CÁLCULO -->
+        <!-- --------------------------------- -->
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+            Dados para Avaliação
+        </h2>
+        
+        <!-- O formulário DEVE ter enctype="multipart/form-data" para lidar com o campo 'foto' -->
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            
+            <!-- Exibe erros globais do formulário -->
+            {% if form.non_field_errors %}
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- RENDERIZAÇÃO MANUAL DOS CAMPOS -->
+
+            <!-- CPF -->
+            <div class="flex flex-col">
+                <label for="{{ form.cpf.id_for_label }}" class="mb-1 text-sm font-medium text-gray-700">
+                    {{ form.cpf.label }}:
+                </label>
+                {{ form.cpf }}
+                {% for error in form.cpf.errors %}
+                    <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <!-- NOME -->
+            <div class="flex flex-col">
+                <label for="{{ form.nome.id_for_label }}" class="mb-1 text-sm font-medium text-gray-700">
+                    {{ form.nome.label }}:
+                </label>
+                {{ form.nome }}
+                {% for error in form.nome.errors %}
+                    <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <!-- LINHA DE DADOS (Sexo e Data de Nascimento) -->
+            <div class="flex space-x-4">
+                <!-- SEXO -->
+                <div class="flex flex-col w-1/2">
+                    <label for="{{ form.sexo.id_for_label }}" class="mb-1 text-sm font-medium text-gray-700">
+                        {{ form.sexo.label }}:
+                    </label>
+                    {{ form.sexo }}
+                    {% for error in form.sexo.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <!-- DATA DE NASCIMENTO -->
+                <div class="flex flex-col w-1/2">
+                    <label for="{{ form.data_nascimento.id_for_label }}" class="mb-1 text-sm font-medium text-gray-700">
+                        {{ form.data_nascimento.label }}:
+                    </label>
+                    {{ form.data_nascimento }}
+                    {% for error in form.data_nascimento.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- ESCOLA -->
+            <div class="flex flex-col">
+                <label for="{{ form.escola.id_for_label }}" class="mb-1 text-sm font-medium text-gray-700">
+                    {{ form.escola.label }}:
+                </label>
+                {{ form.escola }}
+                {% for error in form.escola.errors %}
+                    <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+            
+            <!-- LINHA DE MEDIDAS (Peso e Altura) -->
+            <div class="flex space-x-4">
+                <!-- PESO -->
+                <div class="flex flex-col w-1/2">
+                    <label for="{{ form.peso.id_for_label }}" class="mb-1 text-sm font-medium text-gray-700">
+                        {{ form.peso.label }} (kg):
+                    </label>
+                    {{ form.peso }}
+                    {% for error in form.peso.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <!-- ALTURA -->
+                <div class="flex flex-col w-1/2">
+                    <label for="{{ form.altura.id_for_label }}" class="mb-1 text-sm font-medium text-gray-700">
+                        {{ form.altura.label }} (m):
+                    </label>
+                    {{ form.altura }}
+                    {% for error in form.altura.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- FOTO -->
+            <div class="flex flex-col">
+                <label for="{{ form.foto.id_for_label }}" class="mb-1 text-sm font-medium text-gray-700">
+                    {{ form.foto.label }}:
+                </label>
+                {{ form.foto }}
+                {% for error in form.foto.errors %}
+                    <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <!-- Botão de submissão -->
+            <button type="submit" class="w-full bg-indigo-600 text-white py-3 mt-4 rounded-lg font-semibold text-lg hover:bg-indigo-700 transition duration-300 shadow-lg">
+                Calcular IMC e Cadastrar
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

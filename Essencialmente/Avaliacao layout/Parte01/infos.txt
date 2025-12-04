@@ -1,0 +1,6 @@
+fonte: Josefin Sans
+cores:
+primary-color: #258E00;
+secondary-color: #CBF9BC;
+background-main: #EBFDE5;
+text-color: #666363;

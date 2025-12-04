@@ -1,0 +1,117 @@
+{% load static %}
+{% load bootstrap5 %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essencialmente</title>
+
+    {% bootstrap_css %}
+
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+
+    <nav class="topo">
+        <div class="conteudo-topo">
+            <img src="{% static 'logo.png' %}" class="logo" alt="Logo">
+            <ul class="menu">
+                <li><a href="#">Avaliações</a></li>
+                <li><a href="#">Relatórios</a></li>
+                <li><a href="#">Normas</a></li>
+                <li><a href="#">Sobre</a></li>
+            </ul>
+
+            <button class="botao-entrar">Entrar</button>
+        </div>
+    </nav>
+
+    <section class="banner">
+        <div class="conteudo-banner">
+
+            <div class="texto-banner">
+                <h1>
+                    O acompanhamento de <br>
+                    crianças e adolescentes<br>
+                    com foco no seu bem-estar!
+                </h1>
+
+                <button class="botao-saiba">Saiba mais</button>
+            </div>
+
+            <div class="img-banner">
+                <img src="{% static 'img-main.png' %}" >
+            </div>
+
+        </div>
+    </section>
+
+    <section class="avaliacoes">
+
+        <h2 class="titulo-centro">Avaliações</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <img src="{% static 'img_card1.png' %}" class="icone-card">
+                <h3>Antropometria</h3>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque repudiandae est corporis provident facilis. Eligendi molestiae natus commodi placeat itaque. Earum deleniti voluptatem quibusdam quae voluptatum nam eos rem officia.</p>
+                <a href="#" class="botao-card">Avaliar</a>
+            </div>
+
+            <div class="card">
+                <img src="{% static 'img_card2.png' %}" class="icone-card">
+                <h3>Avaliação IMC</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt, ipsa reiciendis quis autem molestias nisi veritatis id quae incidunt officia non aliquid repellat amet voluptatum odio dolor ratione earum necessitatibus!</p>
+                <a href="{% url 'IMC:avaliar_imc' %}" class="botao-card">Avaliar</a>
+            </div>
+
+            <div class="card">
+                <img src="{% static 'img_card3.png' %}" class="icone-card">
+                <h3>Abdominais</h3>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Animi in tempore perspiciatis aliquam obcaecati! Quas consequuntur similique ratione illo, sunt eveniet ducimus quos sed ipsam dolore qui est, voluptate magnam.</p>
+                <a href="#" class="botao-card">Avaliar</a>
+            </div>
+
+        </div>
+
+    </section>
+
+    <footer class="rodape">
+        <div class="conteudo-rodape">
+
+            <div class="coluna">
+                <h4>Contato</h4>
+
+                <div class="linha">
+                    <img src="{% static 'icon-email.png' %}" class="icone-rodape">
+                    <span>essencialmente@email.com</span>
+                </div>
+
+                <div class="linha">
+                    <img src="{% static 'icon-home.png' %}" class="icone-rodape">
+                    <span>Rua La Salle, 56 – Xanxerê - SC</span>
+                </div>
+
+            </div>
+
+            <div class="coluna">
+                <h4>Redes Sociais</h4>
+
+                <div class="social">
+                    <img src="{% static 'icon-insta.png' %}">
+                    <img src="{% static 'icon-whats.png' %}">
+                    <img src="{% static 'icon-twitter.png' %}">
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+</body>
+</html>
